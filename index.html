@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do-list</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+ 
+</head>
+
+<body style="background-image:url(img-todo/back-to-do-4.jpg)">
+       <!-- header contient le logo et navbar -->
+    <header class="flex flex-col gap-14 sm:flex-row place-content-start items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4" >
+      <img  style="height:9%; width:9%;" src="img-todo/LOGO-last.png" alt="My goals">
+        <ul>
+           <li class="text-white font-bold flex flex-col sm:flex-row justify-between gap-12" >
+             <a class="hover:text-orange-600" href="#"> Workspaces</a>
+             <a class="hover:text-orange-600" href="#">Recent</a>
+             <a class="hover:text-orange-600" href="#">Starred</a>
+             <a class="hover:text-orange-600" href="#">Templates</a>
+             <a class="hover:text-orange-600" href="#"> Creat</a>
+           </li>
+        </ul>
+    </header>
+     <!-- section contient les buttons : ajout simple et multiple et input de recherche -->
+    <section class="container mx-auto p-4 sm:p-6 lg:mx-20">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+      <button onclick="openModal()" class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-black">Add Task +</button>
+      <input type="text" placeholder="Search..." class="bg-purple-950 rounded px-3 py-1 w-full sm:w-auto" />
+      <button class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-black">Add Multiple +</button>
+    </div>
+
+    <!-- représentant les taches en 3 coloms -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- la partie to do  -->
+      <div>
+        <h2 class="text-white font-semibold text-lg lg:text-xl">To Do <span id="todoCount" class="text-rose-300"> (0)</span></h2>
+        <hr class="border-t-2 border-rose-300 mb-4">
+        <div class="space-y-2" id="todo-tasks">
+        </div>
+      </div>
+
+      <!--  la partie de In Progress -->
+      <div>
+        <h2 class="text-white font-semibold text-lg lg:text-xl">In Progress <span id="inprogressCount" class="text-rose-300"> (0)</span></h2>
+        <hr class="border-t-2 border-rose-300 mb-4">
+        <div class="space-y-2" id="inprogress-tasks">
+        </div>
+      </div>
+
+      <!--  la partie Done  -->
+      <div>
+        <h2 class="text-white font-semibold text-lg lg:text-xl">Done <span id="doneCount" class="text-rose-300"> (0)</span></h2>
+        <hr class="border-t-2 border-rose-300 mb-4">
+        <div class="space-y-2" id="done-tasks">
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- le modal pour l'ajout -->
+  <section id="taskModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4">
+    <div class="bg-fuchsia-900 p-6 rounded shadow-lg w-full max-w-lg">
+      <h2 class="text-lg font-semibold mb-4 text-white">Add New Task</h2>
+      <form id="taskForm">
+        <div class="mb-4">
+          <label for="taskTitle" class="block text-sm font-medium text-black">Title</label>
+          <input type="text" id="taskTitle" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="taskDescription" class="block text-sm font-medium text-black">Description</label>
+          <textarea id="taskDescription" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2"></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="taskStatus" class="block text-sm font-medium text-black">Status</label>
+          <select id="taskStatus" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="taskDueDate" class="block text-sm font-medium text-black">Due Date</label>
+          <input type="date" id="taskDueDate" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="taskPriority" class="block text-sm font-medium text-black">Priority</label>
+          <select id="taskPriority" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+            <option value="P1" class="text-red-500">P1</option>
+            <option value="P2" class="text-yellow-500">P2</option>
+            <option value="P3" class="text-green-500">P3</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" onclick="closeModal()" class="bg-fuchsia-950 text-white px-4 py-2 rounded hover:bg-black">Cancel</button>
+          <button type="submit" class="bg-purple-300 text-white px-4 py-2 rounded hover:bg-purple-600">Save</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- le modal de l'edit-->
+  <section id="editTaskModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center hidden p-4">
+    <div class="bg-fuchsia-900 p-6 rounded shadow-lg w-full max-w-lg">
+      <h2 class="text-lg font-semibold mb-4">Edit Task</h2>
+      <form id="editTaskForm">
+        <div class="mb-4">
+          <label for="editTaskTitle" class="block text-sm font-medium text-black">Title</label>
+          <input type="text" id="editTaskTitle" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="editTaskDescription" class="block text-sm font-medium text-black">Description</label>
+          <textarea id="editTaskDescription" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2"></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="editTaskStatus" class="block text-sm font-medium text-black">Status</label>
+          <select id="editTaskStatus" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="editTaskDueDate" class="block text-sm font-medium text-black">Due Date</label>
+          <input type="date" id="editTaskDueDate" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+        </div>
+        <div class="mb-4">
+          <label for="editTaskPriority" class="block text-sm font-medium text-black">Priority</label>
+          <select id="editTaskPriority" class="mt-1 block w-full border border-gray-300 rounded px-3 py-2" required>
+            <option value="P1" class="text-red-500">P1</option>
+            <option value="P2" class="text-yellow-500">P2</option>
+            <option value="P3" class="text-green-500">P3</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2">
+          <button type="button" onclick="closeEditModal()" class="bg-fuchsia-950 text-white px-4 py-2 rounded hover:bg-black">Cancel</button>
+          <button type="submit" class="bg-purple-300 text-white px-4 py-2 rounded hover:bg-purple-600">Save</button>
+        </div>
+      </form>
+  </section>
+  <script src="dynamique.js"></script>
+</body>
+</html>
